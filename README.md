@@ -1,4 +1,46 @@
-Projet NovaBank CoreBienvenue dans le dépôt du projet NovaBank Core.
-Ce projet consiste à concevoir, déployer et sécuriser la base de données relationnelle d'une banque en ligne à l'aide de PostgreSQL 16+ sur une machine virtuelle Ubuntu Server.PrésentationLa base de données NovaBank Core garantit la fiabilité absolue des opérations financières :Principe de moindre privilège : Chaque utilisateur (application, support, analyste, auditeur) ne possède que les droits strictement nécessaires à son métier.Transactions atomiques (ACID) : Les opérations critiques comme les virements s'exécutent entièrement ou pas du tout (prévention des deadlocks et vérification de solde).Immuabilité et Auditabilité : Le grand livre (transactions) est strictement verrouillé en écriture. Toute manipulation sur les comptes et les clients est journalisée dans une table d'audit dédiée.Détection de fraude : Des triggers automatiques lèvent des alertes en cas de comportements suspicieux (montants élevés, vélocité anormale de virements).Architecture des donnéesLa base bankdb est divisée en deux schémas :core : Contient les données métiers (customers, accounts, transfers, transactions, fraud_alerts).audit : Contient le journal de sécurité (audit_log).Les vues suivantes ont été créées pour masquer les données sensibles :core.v_support_customers : Masquage des emails, hachage des numéros de téléphone et anonymisation des noms pour le support.core.v_support_accounts : Vue modifiable avec CHECK OPTION (empêche la clôture non autorisée de comptes).core.mv_daily_stats : Vue matérialisée pour accélérer les requêtes d'analyse. Matrice des rôles et des droitsL'accès aux données est strictement compartimenté par rôles de groupes :Profil / RôleAccès en Lecture (SELECT)Accès en Écriture / Exécutiongrp_appliAucune table.Uniquement l'exécution des procédures stockées (sp_transfer, sp_open_account, sp_account_statement).grp_supportVues de support uniquement.UPDATE du statut des comptes (sauf clôture). Exécution de la fonction de masquage.grp_analysteVues statistiques, tables métiers anonymes.Aucun droit d'écriture. Timeout limité à 10s.grp_auditeurTables de transactions, d'audit et fraudes.Aucun droit d'écriture.bank_ownerTotalité (propriétaire).Droit d'administration (DDL/DML).Personne (pas même le propriétaire) ne peut altérer ou supprimer des lignes de la table core.transactions.Reconstruire le projet de A à ZUn script maître est fourni à la racine du projet pour recréer l'intégralité du projet en une seule commande. Ce script supprime la base existante, réinitialise les rôles, déploie les tables et contraintes, génère le million d'écritures de test, configure les droits/vues/index, et applique les triggers et procédures.Pour tout reconstruire :./rebuild.sh
-Pour tester la sauvegarde et restauration (Custom format) :./scripts/backup_restore.sh
-Liste des captures d'écranLes preuves du bon fonctionnement du projet sont situées dans le dossier screenshots/ :E0_netplan_ip.png : Configuration des deux cartes réseau (NAT et Host-only).E1_ufw_pghba.png : Activation du pare-feu et vérification stricte de pg_hba.conf.E2_1_million_lignes.png : Preuve du chargement du million d'écritures cohérentes.E3_matrice_droits.png : Matrice vérifiant que l'application n'a pas d'accès direct aux tables.E5_mesure_index.png : Plan d'exécution avant/après prouvant l'efficacité de l'index BRIN.E8_erreurs_securite.png : Déclenchement des erreurs de sécurité face aux actions interdites. Déclaration d'utilisation de l'IAConformément aux règles du projet, je déclare avoir utilisé une Intelligence Artificielle pour m'assister de temps en temps.Aide à la configuration : pour m’aider e mettre en place la connections parce que j’avais quelques bug avec virtual box et au final je suis passer sur vmware et ct tranquile.Débogage : Aide à l'interprétation des erreurs PostgreSQL (ex: deadlock, permission denied, erreurs pg_hba.conf) et aussi pour repérer les erreur du a des fautes de frappe.Je suis en mesure d'expliquer le fonctionnement de chaque ligne de code SQL  et Bash figurant dans ce dépô
+# NovaBank Core - Projet PostgreSQL
+
+Bienvenue dans le dépôt du projet **NovaBank Core**. Ce projet consiste à créer, sécuriser et automatiser la base de données d'une banque en ligne avec PostgreSQL sur une machine virtuelle Linux (Ubuntu Server).
+
+## Architecture des fichiers
+* `scripts/` : Scripts Bash pour l'administration du serveur (`01_install_server.sh`) et la gestion des sauvegardes (`backup_restore.sh`).
+* `sql/` : Scripts SQL numérotés contenant toute la logique de la base (schémas, tables, données de test, vues, droits, index, triggers, procédures).
+* `screenshots/` : Les captures d'écran prouvant le bon fonctionnement de chaque étape.
+* `rebuild.sh` : Le script maître permettant de tout effacer et reconstruire de zéro.
+* `.gitignore` et `.gitattributes` : Configurations Git (blocage des mots de passe et gestion des fins de ligne `LF`).
+
+## Comment tout refaire depuis zéro
+Pour reconstruire entièrement le projet sur une machine fraîche :
+1. Clonez ce dépôt.
+2. Exécutez le script d'installation du serveur (en root) : `sudo ./scripts/01_install_server.sh`
+3. Lancez le script de reconstruction totale (qui exécutera tous les scripts SQL dans l'ordre) : `./rebuild.sh`
+
+## Schéma des tables
+La base `bankdb` est répartie en deux schémas (`core` et `audit`) et contient 6 tables :
+* `core.customers` : Informations clients (contraintes sur l'âge majeur et la validité de l'email).
+* `core.accounts` : Comptes bancaires (liés aux clients, solde toujours positif et mis à jour automatiquement).
+* `core.transfers` : Ordres de virements (entre deux comptes distincts avec montant positif).
+* `core.transactions` : Grand livre immuable des écritures (dépôts, retraits, transferts entrants/sortants).
+* `core.fraud_alerts` : Alertes automatiques de fraude (alimentées par les triggers).
+* `audit.audit_log` : Historique inaltérable de toutes les modifications (INSERT, UPDATE, DELETE).
+
+## Gestion des droits (Principe du moindre privilège)
+* `bank_owner` : Propriétaire de la base (droits complets).
+* `usr_analyste` (via `grp_analyste`) : Lecture sur les vues statistiques et les tables de transactions anonymisées. Aucun accès à la table clients.
+* `usr_support` (via `grp_support`) : Lecture de la vue client sécurisée (emails masqués, mots de passe hashés), et droit exclusif de modifier le statut d'un compte (UPDATE).
+* `usr_appli` (via `grp_appli`) : Aucun droit direct sur les tables. Droit d'exécution (`EXECUTE`) uniquement sur les procédures stockées (virements, ouvertures, relevés).
+* `usr_auditeur` (via `grp_auditeur`) : Lecture seule sur les alertes de fraude, les transactions et les journaux d'audit.
+
+## Liste des captures d'écran fournies
+1. `E1_serveur_parefeu.png` : Statut UFW et validation des règles `pg_hba.conf`.
+2. `E2_1_million_lignes.png` : Preuve du million d'écritures générées avec `generate_series`.
+3. `E3_matrice_droits.png` : Matrice booléenne validant les permissions strictes de chaque profil.
+4. `E5_index_explain.png` : Comparaison des plans d'exécution `Seq Scan` vs `Index/Bitmap Scan`.
+5. `E8_tests_securite.png` : Preuve que les actions interdites (modification du grand livre, accès non autorisés) sont bloquées par la base.
+6. `E8_backup_restore.png` : Validation de la restauration via `pg_dump -Fc` et `pg_restore`.
+
+## Déclaration d'utilisation de l'IA
+Pour réaliser ce projet, une intelligence artificielle a été utilisée en tant qu'assistant de programmation. Elle m'a aidé à :
+* Structurer les scripts Bash d'installation et automatiser la restauration.
+* Diagnostiquer les problèmes de configuration réseau (Netplan sur VMware).
+Je suis en capacité de comprendre et d'expliquer chaque ligne de code présente dans ce dépôt.
