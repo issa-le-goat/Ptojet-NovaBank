@@ -1,0 +1,5 @@
+.env
+*.pgpass
+*.dump
+*.csv
+*.bak
