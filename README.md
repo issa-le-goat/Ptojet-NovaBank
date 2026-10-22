@@ -44,3 +44,24 @@ Pour réaliser ce projet, une intelligence artificielle a été utilisée en tan
 * Structurer les scripts Bash d'installation et automatiser la restauration.
 * Diagnostiquer les problèmes de configuration réseau (Netplan sur VMware).
 Je suis en capacité de comprendre et d'expliquer chaque ligne de code présente dans ce dépôt.
+
+<img width="829" height="517" alt="Capture d&#39;écran 2026-10-22 170438" src="https://github.com/user-attachments/assets/6601aaec-bfa3-4756-87f9-5dcc1e004587" />
+<img width="944" height="1020" alt="Capture d&#39;écran 2026-10-22 170410" src="https://github.com/user-attachments/assets/8f3653be-cab6-442a-8e98-13330ad09366" />
+<img width="924" height="913" alt="Capture d&#39;écran 2026-10-22 170403" src="https://github.com/user-attachments/assets/b5b79947-5b9e-48ca-812b-228bf609dc33" />
+<img width="952" height="913" alt="Capture d&#39;écran 2026-10-22 170334" src="https://github.com/user-attachments/assets/46b40201-ed20-499b-96d9-6305cc2a96d0" />
+<img width="946" height="1093" alt="Capture d&#39;écran 2026-10-22 170321" src="https://github.com/user-attachments/assets/749caf81-8313-48f4-a833-a3db0b0698a1" />
+<img width="939" height="615" alt="Capture d&#39;écran 2026-10-22 170232" src="https://github.com/user-attachments/assets/5d6c22f3-da9d-4270-8e3f-bf2240133e97" />
+<img width="1310" height="866" alt="Capture d&#39;écran 2026-10-22 165750" src="https://github.com/user-attachments/assets/6a2dcd12-38ec-49a9-98ac-9228ec35d994" />
+<img width="12" height="4" alt="Capture d&#39;écran 2026-10-22 165735" src="https://github.com/user-attachments/assets/83cb1948-f68e-4158-8dd8-1a308f863164" />
+<img width="950" height="713" alt="Capture d&#39;écran 2026-10-22 165143" src="https://github.com/user-attachments/assets/fe4e0b05-5803-44f2-9cbd-d38dc7d0fee6" />
+<img width="499" height="122" alt="Capture d&#39;écran 2026-10-22 164804" src="https://github.com/user-attachments/assets/df505397-ab41-413d-b74a-6ec7354f36fb" />
+<img width="932" height="1091" alt="Capture d&#39;écran 2026-10-22 164554" src="https://github.com/user-attachments/assets/70a296f7-7b03-4257-9703-e7b028f05265" />
+<img width="642" height="377" alt="Capture d&#39;écran 2026-10-22 164330" src="https://github.com/user-attachments/assets/9452857a-3e59-4a57-bf9a-0597a5fa8e97" />
+<img width="896" height="859" alt="Capture d&#39;écran 2026-10-22 164111" src="https://github.com/user-attachments/assets/56d6bba2-883b-4358-83ac-fbddd616b01d" />
+<img width="641" height="357" alt="Capture d&#39;écran 2026-10-22 171341" src="https://github.com/user-attachments/assets/0f69cd15-8ba2-4ae8-95e4-1fef5e20840e" />
+<img width="950" height="1034" alt="Capture d&#39;écran 2026-10-22 171257" src="https://github.com/user-attachments/assets/5b56d767-aeeb-4892-94e2-7496264315de" />
+<img width="629" height="177" alt="Capture d&#39;écran 2026-10-22 171135" src="https://github.com/user-attachments/assets/412a4248-5968-4da9-9127-e57a1cb47309" />
+<img width="683" height="297" alt="Capture d&#39;écran 2026-10-22 171041" src="https://github.com/user-attachments/assets/0984069e-2bab-46e9-b032-59b458303711" />
+<img width="953" height="1105" alt="Capture d&#39;écran 2026-10-22 170940" src="https://github.com/user-attachments/assets/86fe2089-bc1c-4c57-b3ea-f827895251b4" />
+<img width="905" height="1018" alt="Capture d&#39;écran 2026-10-22 170739" src="https://github.com/user-attachments/assets/b3b08218-6be7-49ce-9869-b152f6560e84" />
+
